@@ -265,6 +265,7 @@
 
     const baseDances = ['Salsa', 'Bachata', 'Kizomba', 'Zouk', 'Tango'];
     let sharedUserDances = []; 
+    let localNewDances = []; // Rastreo local de lo añadido en esta sesión
 
     const defaultColors = {
         salsa: '#ef4444',
@@ -282,15 +283,15 @@
         const card = document.createElement('div');
         card.className = 'dance-card';
         const defaultColor = defaultColors[name.toLowerCase()] || '#cbd5e1';
+        const safeId = name.toLowerCase().replace(/\s+/g, '-');
 
-        // Añadida la clase especial "notranslate" al nombre para protegerlo de Google Translate
         card.innerHTML = `
             <div class="dance-info">
                 <span class="dance-name notranslate">${name}</span>
                 ${isUserSuggested ? '<span class="badge">Sugerido</span>' : ''}
             </div>
             <div class="picker-wrapper">
-                <input type="color" id="color-${name.toLowerCase().replace(/\s+/g, '-')}" value="${defaultColor}">
+                <input type="color" id="color-${safeId}" data-dance="${name}" value="${defaultColor}">
             </div>
         `;
         return card;
@@ -337,7 +338,7 @@
         if (!name) return;
 
         const lowerName = name.toLowerCase();
-        const allExisting = [...baseDances, ...sharedUserDances];
+        const allExisting = [...baseDances, ...sharedUserDances, ...localNewDances];
         
         if (allExisting.map(d => d.toLowerCase()).includes(lowerName)) {
             alert('¡Este estilo ya se encuentra en la lista!');
@@ -346,7 +347,7 @@
 
         userSection.style.display = 'block';
         userContainer.appendChild(createDanceCard(name, true));
-        sharedUserDances.push(name);
+        localNewDances.push(name);
 
         input.value = '';
         toggleAddForm();
@@ -354,19 +355,16 @@
 
     async function submitSurvey() {
         const results = {};
-        const allDances = [...baseDances, ...sharedUserDances];
-
-        allDances.forEach(dance => {
-            const id = `color-${dance.toLowerCase().replace(/\s+/g, '-')}`;
-            const picker = document.getElementById(id);
-            if (picker) {
-                results[dance] = picker.value;
-            }
+        const allPickers = document.querySelectorAll('input[type="color"]');
+        
+        allPickers.forEach(picker => {
+            const danceName = picker.getAttribute('data-dance');
+            results[danceName.toLowerCase()] = picker.value;
         });
 
         const payload = {
             choices: results,
-            newDancesAdded: sharedUserDances
+            newDancesAdded: localNewDances
         };
 
         try {
@@ -377,6 +375,8 @@
                 body: JSON.stringify(payload)
             });
             alert('¡Muchas gracias! Tus respuestas han sido enviadas con éxito.');
+            localNewDances = [];
+            loadDynamicDances();
         } catch (error) {
             console.error('Error:', error);
             alert('Hubo un problema al enviar las respuestas.');
