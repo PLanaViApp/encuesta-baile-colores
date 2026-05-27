@@ -292,24 +292,34 @@
         return card;
     }
 
-    async function loadDynamicDances() {
+async function loadDynamicDances() {
         try {
             const response = await fetch(googleScriptUrl);
             const data = await response.json();
-            if (data && data.extraDances) {
-                // Guardamos solo los nombres en el array global para las validaciones de duplicados
-                sharedUserDances = data.extraDances.map(d => d.name);
+            
+            if (data && data.extraDances && data.extraDances.length > 0) {
+                // Normalizamos los datos por si acaso: si viene como texto plano, lo convertimos en objeto con color gris
+                const normalizedDances = data.extraDances.map(dance => {
+                    if (typeof dance === 'object' && dance !== null) {
+                        return { name: dance.name || '', color: dance.color || '#cbd5e1' };
+                    } else {
+                        return { name: dance.toString(), color: '#cbd5e1' };
+                    }
+                }).filter(d => d.name.trim() !== ''); // Filtramos posibles vacíos
+
+                // Guardamos correctamente solo los nombres en el array global para evitar duplicados
+                sharedUserDances = normalizedDances.map(d => d.name);
                 
-                if (data.extraDances.length > 0) {
+                if (normalizedDances.length > 0) {
                     userSection.style.display = 'block';
                     userContainer.innerHTML = '';
                     
-                    // Recorremos los elementos creando las tarjetas con el color que viene del Excel
-                    data.extraDances.forEach(danceObj => {
+                    // Renderizamos las tarjetas mapeando el color recuperado desde el Excel
+                    normalizedDances.forEach(danceObj => {
                         const card = document.createElement('div');
                         card.className = 'dance-card';
                         const safeId = btoa(unescape(encodeURIComponent(danceObj.name))).replace(/=/g, ''); 
-    
+        
                         card.innerHTML = `
                             <div class="dance-info">
                                 <span class="dance-name notranslate">${danceObj.name}</span>
@@ -321,10 +331,15 @@
                         `;
                         userContainer.appendChild(card);
                     });
+                } else {
+                    userSection.style.display = 'none';
                 }
+            } else {
+                userSection.style.display = 'none';
             }
         } catch (error) {
             console.error('Error cargando estilos dinámicos:', error);
+            userSection.style.display = 'none';
         }
     }
 
