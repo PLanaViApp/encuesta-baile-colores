@@ -76,7 +76,6 @@
         .dance-name {
             font-weight: 600;
             font-size: 1.1rem;
-            text-transform: capitalize;
         }
 
         .badge {
@@ -188,10 +187,6 @@
             cursor: pointer;
         }
 
-        .submit-btn:hover {
-            opacity: 0.9;
-        }
-
         .save-survey-btn {
             display: block;
             width: 100%;
@@ -246,7 +241,7 @@
         </div>
     </div>
 
-    <button class="save-survey-btn" onclick="submitSurvey()">Enviar mis asociaciones</button>
+    <button class="save-survey-btn" id="btn-enviar" onclick="submitSurvey()">Enviar mis asociaciones</button>
 </div>
 
 <script type="text/javascript">
@@ -283,7 +278,7 @@
         const card = document.createElement('div');
         card.className = 'dance-card';
         const defaultColor = defaultColors[name.toLowerCase()] || '#cbd5e1';
-        const safeId = name.toLowerCase().replace(/\s+/g, '-');
+        const safeId = btoa(unescape(encodeURIComponent(name))).replace(/=/g, ''); 
 
         card.innerHTML = `
             <div class="dance-info">
@@ -354,12 +349,15 @@
     }
 
     async function submitSurvey() {
+        const btn = document.getElementById('btn-enviar');
+        btn.disabled = true;
+        btn.innerText = 'Enviando respuestas...';
+
         const results = {};
         const allPickers = document.querySelectorAll('input[type="color"]');
         
         allPickers.forEach(picker => {
             const danceName = picker.getAttribute('data-dance');
-            // Enviamos la clave del objeto exactamente igual a como se lee el nombre del baile
             results[danceName] = picker.value;
         });
 
@@ -381,6 +379,9 @@
         } catch (error) {
             console.error('Error:', error);
             alert('Hubo un problema al enviar las respuestas.');
+        } finally {
+            btn.disabled = false;
+            btn.innerText = 'Enviar mis asociaciones';
         }
     }
 
