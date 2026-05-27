@@ -297,12 +297,29 @@
             const response = await fetch(googleScriptUrl);
             const data = await response.json();
             if (data && data.extraDances) {
-                sharedUserDances = data.extraDances;
-                if (sharedUserDances.length > 0) {
+                // Guardamos solo los nombres en el array global para las validaciones de duplicados
+                sharedUserDances = data.extraDances.map(d => d.name);
+                
+                if (data.extraDances.length > 0) {
                     userSection.style.display = 'block';
                     userContainer.innerHTML = '';
-                    sharedUserDances.forEach(dance => {
-                        userContainer.appendChild(createDanceCard(dance, true));
+                    
+                    // Recorremos los elementos creando las tarjetas con el color que viene del Excel
+                    data.extraDances.forEach(danceObj => {
+                        const card = document.createElement('div');
+                        card.className = 'dance-card';
+                        const safeId = btoa(unescape(encodeURIComponent(danceObj.name))).replace(/=/g, ''); 
+    
+                        card.innerHTML = `
+                            <div class="dance-info">
+                                <span class="dance-name notranslate">${danceObj.name}</span>
+                                <span class="badge">Sugerido</span>
+                            </div>
+                            <div class="picker-wrapper">
+                                <input type="color" id="color-${safeId}" data-dance="${danceObj.name}" value="${danceObj.color}">
+                            </div>
+                        `;
+                        userContainer.appendChild(card);
                     });
                 }
             }
