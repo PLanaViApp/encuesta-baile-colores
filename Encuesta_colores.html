@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encuesta: Asociaciones de Colores en el Baile</title>
+    <style>
+        :root {
+            --bg-color: #f7f9fc;
+            --card-bg: #ffffff;
+            --text-color: #2d3748;
+            --accent-color: #6366f1;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Contenedor del Traductor de Google */
+        #google_translate_element {
+            margin-bottom: 20px;
+            align-self: flex-end;
+            max-width: 600px;
+            width: 100%;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            color: #1a202c;
+        }
+
+        p.subtitle {
+            text-align: center;
+            color: #718096;
+            margin-bottom: 30px;
+        }
+
+        .dance-card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.2s;
+        }
+
+        .dance-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .dance-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dance-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-transform: capitalize;
+        }
+
+        .badge {
+            font-size: 0.75rem;
+            color: #6366f1;
+            background: #e0e7ff;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-top: 4px;
+            width: max-content;
+        }
+
+        .picker-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        input[type="color"] {
+            -webkit-appearance: none;
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            cursor: pointer;
+            background: none;
+            padding: 0;
+        }
+
+        input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+
+        input[type="color"]::-webkit-color-swatch {
+            border: 2px solid var(--border-color);
+            border-radius: 50%;
+        }
+
+        .section-title {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #718096;
+            margin: 30px 0 15px 5px;
+        }
+
+        .add-btn {
+            background: none;
+            border: 2px dashed #cbd5e1;
+            color: #64748b;
+            width: 100%;
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .add-btn:hover {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+            background: #f5f3ff;
+        }
+
+        .form-group {
+            display: none;
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            margin-top: 15px;
+        }
+
+        .form-group.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 10px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--accent-color);
+        }
+
+        .submit-btn {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .submit-btn:hover {
+            opacity: 0.9;
+        }
+
+        .save-survey-btn {
+            display: block;
+            width: 100%;
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 40px;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+        }
+
+        .save-survey-btn:hover {
+            background: #059669;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<div id="google_translate_element"></div>
+
+<div class="container">
+    <h1>Asociaciones de Colores en el Baile</h1>
+    <p class="subtitle">Elige el color que asocies intuitivamente con cada uno de los siguientes estilos de baile</p>
+
+    <div id="base-dances"></div>
+
+    <div id="user-suggested-section" style="display: none;">
+        <div class="section-title">Añadidos por otros usuarios</div>
+        <div id="user-dances"></div>
+    </div>
+
+    <div style="margin-top: 25px;">
+        <button class="add-btn" id="show-form-btn" onclick="toggleAddForm()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Añadir otro estilo de baile
+        </button>
+
+        <div class="form-group" id="add-dance-form">
+            <div class="input-row">
+                <input type="text" id="new-dance-name" placeholder="Nombre del estilo (ej. Bachata Sensual)...">
+                <button class="submit-btn" onclick="addNewDance()">Añadir</button>
+            </div>
+        </div>
+    </div>
+
+    <button class="save-survey-btn" onclick="submitSurvey()">Enviar mis asociaciones</button>
+</div>
+
+<script type="text/javascript">
+    // Configuración del traductor automático de Google
+    function googleTranslateElementInit() {
+        new google.translate.TranslateElement({
+            pageLanguage: 'es', 
+            includedLanguages: 'es,ru,en,fr,it,pt', 
+            layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+        }, 'google_translate_element');
+    }
+</script>
+<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<script>
+    // URL de tu Google Apps Script (¡Ya está enlazada!)
+    const googleScriptUrl = 'https://script.google.com/macros/s/AKfycbwXHm4kgBMPL5Zq-AuoR-ySq35ifqO5WNTnAZItrE4ckmmHnyapWsh3Je85Jyn4et99Qw/exec';
+
+    // Lista por defecto
+    const baseDances = ['salsa', 'bachata', 'kizomba', 'zouk', 'tango'];
+    let sharedUserDances = []; 
+
+    const defaultColors = {
+        salsa: '#ef4444',
+        bachata: '#ec4899',
+        kizomba: '#8b5cf6',
+        zouk: '#3b82f6',
+        tango: '#111827'
+    };
+
+    const baseContainer = document.getElementById('base-dances');
+    const userContainer = document.getElementById('user-dances');
+    const userSection = document.getElementById('user-suggested-section');
+
+    function createDanceCard(name, isUserSuggested = false) {
+        const card = document.createElement('div');
+        card.className = 'dance-card';
+        const defaultColor = defaultColors[name.toLowerCase()] || '#cbd5e1';
+
+        card.innerHTML = `
+            <div class="dance-info">
+                <span class="dance-name">${name}</span>
+                ${isUserSuggested ? '<span class="badge">Sugerido</span>' : ''}
+            </div>
+            <div class="picker-wrapper">
+                <input type="color" id="color-${name.toLowerCase().replace(/\s+/g, '-')}" value="${defaultColor}">
+            </div>
+        `;
+        return card;
+    }
+
+    // Cargar bailes dinámicos desde la hoja de Google al abrir
+    async function loadDynamicDances() {
+        try {
+            const response = await fetch(googleScriptUrl);
+            const data = await response.json();
+            if (data && data.extraDances) {
+                sharedUserDances = data.extraDances;
+                if (sharedUserDances.length > 0) {
+                    userSection.style.display = 'block';
+                    userContainer.innerHTML = '';
+                    sharedUserDances.forEach(dance => {
+                        userContainer.appendChild(createDanceCard(dance, true));
+                    });
+                }
+            }
+        } catch (error) {
+            console.error('Error cargando estilos dinámicos:', error);
+        }
+    }
+
+    function init() {
+        baseContainer.innerHTML = '';
+        baseDances.forEach(dance => {
+            baseContainer.appendChild(createDanceCard(dance));
+        });
+        loadDynamicDances();
+    }
+
+    function toggleAddForm() {
+        const form = document.getElementById('add-dance-form');
+        form.classList.toggle('active');
+        if (form.classList.contains('active')) {
+            document.getElementById('new-dance-name').focus();
+        }
+    }
+
+    function addNewDance() {
+        const input = document.getElementById('new-dance-name');
+        const name = input.value.trim();
+        if (!name) return;
+
+        const lowerName = name.toLowerCase();
+        const allExisting = [...baseDances, ...sharedUserDances];
+        
+        if (allExisting.map(d => d.toLowerCase()).includes(lowerName)) {
+            alert('¡Este estilo ya se encuentra en la lista!');
+            return;
+        }
+
+        userSection.style.display = 'block';
+        userContainer.appendChild(createDanceCard(name, true));
+        sharedUserDances.push(name);
+
+        input.value = '';
+        toggleAddForm();
+    }
+
+    async function submitSurvey() {
+        const results = {};
+        const allDances = [...baseDances, ...sharedUserDances];
+
+        allDances.forEach(dance => {
+            const id = `color-${dance.toLowerCase().replace(/\s+/g, '-')}`;
+            const picker = document.getElementById(id);
+            if (picker) {
+                results[dance] = picker.value;
+            }
+        });
+
+        const payload = {
+            choices: results,
+            newDancesAdded: sharedUserDances
+        };
+
+        try {
+            await fetch(googleScriptUrl, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            alert('¡Muchas gracias! Tus respuestas han sido enviadas con éxito.');
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Hubo un problema al enviar las respuestas.');
+        }
+    }
+
+    init();
+</script>
+</body>
+</html>
