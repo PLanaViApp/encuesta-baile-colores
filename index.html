@@ -279,13 +279,10 @@
     const userContainer = document.getElementById('user-dances');
     const userSection = document.getElementById('user-suggested-section');
 
-    // Función arreglada: ahora genera correctamente los inputs de color interactivos para todos
     function createDanceCard(name, isUserSuggested = false) {
         const card = document.createElement('div');
         card.className = 'dance-card';
         const defaultColor = defaultColors[name.toLowerCase()] || '#cbd5e1';
-        
-        // Creamos un identificador seguro para el ID del input sin espacios
         const safeId = name.toLowerCase().replace(/\s+/g, '-');
 
         card.innerHTML = `
@@ -360,10 +357,10 @@
         const results = {};
         const allPickers = document.querySelectorAll('input[type="color"]');
         
-        // Recorremos todos los selectores de la página para empaquetar los votos
         allPickers.forEach(picker => {
             const danceName = picker.getAttribute('data-dance');
-            results[danceName.toLowerCase()] = picker.value;
+            // Enviamos la clave del objeto exactamente igual a como se lee el nombre del baile
+            results[danceName] = picker.value;
         });
 
         const payload = {
